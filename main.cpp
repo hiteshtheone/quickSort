@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+//#include <stdlib.h>
 
 #define N   10
 using namespace std;
@@ -25,6 +26,12 @@ int main(int argc, const char * argv[]) {
         cout << a[i] << "  " ;
     }
     cout << endl << "CountQ= " << countQ << endl;
+    for (i=0; i<10; i++) {
+        //srand(time(NULL));
+        int random = rand();
+   //     cout << random%10 << "\t" << random << endl;
+    }
+    cout << endl;
     return 0;
 }
 
@@ -37,21 +44,41 @@ void swapQ(int p1,int p2)
 
 void partitionQ(int l, int r)
 {
-    countQ++;
-    if (l == r-1 || l >r ) {
+    
+    if (l >= r || l >r ) {
         return;
     }
-    //int i = rand()%N;
-    int pivot = a[l];
-    cout << "Pivot = "<< pivot << endl;
-    int j,i=l+1;
-    for (j=l+1; j<r; j++) {
+    countQ++;
+    srand((unsigned int)time(NULL));
+    int pivotPos = rand()%(r-l) + l;
+    int pivot = a[pivotPos];
+    cout << "Pivot = "<< pivot << " Pivot pos = "<< pivotPos /*<< " l = " << l << " r =  " << r */<<endl;
+    int j,i=l;
+    bool pivotLower=false;
+    for (j=l; j<r; j++) {
+        if (j == pivotPos) {
+            continue;
+        }
+        if (i == pivotPos) {
+            i++;
+            pivotLower =true;
+            //continue;
+        }
         if (a[j] < pivot) {
             swapQ(j, i++);
             //i++;
         }
     }
-    swapQ(l, i-1);
-    partitionQ(l, i-2);
-    partitionQ(i, r);
+    if (!pivotLower) {
+        swapQ(pivotPos, i);
+        partitionQ(l, i);
+        partitionQ(i+1, r);
+    }
+    else{
+        swapQ(pivotPos, i-1);
+        partitionQ(l, i-1);
+        partitionQ(i, r);
+    }
+    
+    
 }
